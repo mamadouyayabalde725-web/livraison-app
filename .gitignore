@@ -1,7 +1,0 @@
-instance/
-__pycache__/
-*.db
-venv/
-.env
-build/
-.dart_tool/
