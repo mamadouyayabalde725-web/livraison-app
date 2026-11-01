@@ -21,9 +21,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-change-me")
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-db_url = os.environ.get("DATABASE_URL", "sqlite:///livraisons.db")
-if db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
+db_url = os.environ.get("DATABASE_URL", "sqlite:///livraisons.db").strip().strip('"')
+for _prefixe in ("postgres://", "postgresql://"):  # force le pilote psycopg2 installé
+    if db_url.startswith(_prefixe):
+        db_url = "postgresql+psycopg2://" + db_url[len(_prefixe):]
 app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True, "pool_recycle": 280}
 db = SQLAlchemy(app)
